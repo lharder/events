@@ -1,0 +1,23 @@
+local Events = require( "main.events" )
+
+local cnt = 0
+
+function init( self )
+	self.subscription = Events.ON_CLICK:subscribe( function( attr ) 
+		pprint( "onClick from GUI!" ) 
+
+		cnt = cnt + 1
+
+		local node = gui.get_node( "hudTitle" )
+		gui.set_text( node, "#" .. cnt .. ": " .. attr.pos ) 
+		
+		if cnt % 3 == 0 then 
+			Events.ON_THREE_CLICKS:trigger( cnt )
+		end
+	end )
+end
+
+
+function final( self )
+	Events.ON_CLICK:unsubscribe( self.subscription )
+end

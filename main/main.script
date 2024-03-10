@@ -1,0 +1,22 @@
+local Events = require( "main.events" )
+
+
+function init(self)
+	msg.post( ".", "acquire_input_focus" )
+	msg.post( "@render:", "use_fixed_fit_projection", { near = -1, far = 1 } )
+
+	Events.ON_THREE_CLICKS:subscribe( function( cnt ) 
+		pprint( "onThreeClicks from GO!" ) 
+		
+		local txt = "This was the " .. cnt .. ". click (~ multitude of 3)."
+		pprint( txt )
+		label.set_text( "#label", txt )
+	end )
+end
+
+
+function on_input( self, action_id, action )
+	if action_id == hash("touch") and action.pressed then
+		Events.ON_CLICK:trigger( { pos = go.get_position() } )
+	end
+end
