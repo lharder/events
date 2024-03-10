@@ -28,9 +28,11 @@ self.subscription = Events.ON_CLICK:subscribe( function( attr )
 end )
 ```
 
-As a parameter to event:subscribe(), you provide a callback function to be called once an instance of that event is triggered. Your handler function will receive all parameters a triggering object will porovide.
+As a parameter to event:subscribe(), you provide a callback function to be called once an instance of that event is triggered. Your handler function will receive all parameters a triggering object will provide.
 
-The event:subscribe() method returns a handle that you need to unsubscribe from further events of that type. It is important to unsubscribe from the event before a subscriber gets deleted, for example. So, to be on the save side, you should always call the event:unsubscribe() method in the finalize function of an object that subscribes to an event:
+The event:subscribe() method returns a handle that you need in order to unsubscribe from further events of that type. It is important to unsubscribe  from an event before the subscriber itself gets deleted. 
+
+So, to be on the save side, you should always call the event:unsubscribe() method in the finalize function of an object that subscribes to an event:
 
 ```
 -- unsubscribe from further events
@@ -39,7 +41,7 @@ function final( self )
 end
 ```
 
-To trigger a new instance of an event, any script or module may call the event:trigger() method with any number of arbitrary arguments. 
+To trigger a new instance of an event, any script or module may call the event:trigger() method with any number of useful parameters. 
 
 ```
 -- inform all subscribers that a new event 
@@ -48,5 +50,5 @@ Events.ON_CLICK:trigger( { txt = "Hello Click" } )
 
 ```
 
-Depending on the type of event, you may want to provide different arguments to the consumers. All parameters will be passed to the handler function you have defined upon subscribing to that event.
+Depending on the type of event, you may want to provide different arguments to the consumers. All parameters will be passed to the callback function you have defined upon subscribing to that event.
 
