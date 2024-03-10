@@ -1,21 +1,52 @@
-# Welcome to Defold
+# Events
 
-This project was created from the "mobile" project template. This means that the settings in ["game.project"](defold://open?path=/game.project) have been changed to be suitable for a mobile game:
+A simple event bus to allow for scripts in Defold to be notified of events they are interested in. Depending on the type of event, callbacks can make use of all values the source provides.
 
-- The screen size is set to 640x1136
-- The projection is set to Fixed Fit
-- Orientation is fixed vertically
-- Android and iOS icons are set
-- Mouse click/single touch is bound to action "touch"
-- A simple script in a game object is set up to receive and react to input
-- Accelerometer input is turned off (for better battery life)
+Thanks to https://github.com/DanEngelbrecht/LuaScriptInstance, there are no restrictions for the consumer to access go / gui functions as the callbacks are always handled in the right context.
 
-[Build and run](defold://build) to see it in action. You can of course alter these settings to fit your needs.
+Within your game, it is good practice to define your own, game-specific events for easy access, e.g. in a Lua module, you may define:
 
-Check out [the documentation pages](https://defold.com/learn) for examples, tutorials, manuals and API docs.
+```
+-- original events module as provided by the library
+local Events = require( "events.events" )
 
-If you run into trouble, help is available in [our forum](https://forum.defold.com).
+-- your game specific events
+Events.ON_CLICK = Events.create( "onClick" )
+Events.ON_THREE_CLICKS = Events.create( "onThreeClicks" )
 
-Happy Defolding!
+-- extended Events object to be used in your game
+return Events
+```
 
----
+Then, in order to be notified of events, you subscribe to one of the defined event types:
+
+```
+-- react to an event happening somewhere else
+self.subscription = Events.ON_CLICK:subscribe( function( attr ) 
+	pprint( "Click!" )
+	pprint( attr ) 
+end )
+```
+
+As a parameter to event:subscribe(), you provide a callback function to be called once an instance of that event is triggered. Your handler function will receive all parameters a triggering object will porovide.
+
+The event:subscribe() method returns a handle that you need to unsubscribe from further events of that type. It is important to unsubscribe from the event before a subscriber gets deleted, for example. So, to be on the save side, you should always call the event:unsubscribe() method in the finalize function of an object that subscribes to an event:
+
+```
+-- unsubscribe from further events
+function final( self )
+	Events.ON_CLICK:unsubscribe( self.subscription )
+end
+```
+
+To trigger a new instance of an event, any script or module may call the event:trigger() method with any number of arbitrary arguments. 
+
+```
+-- inform all subscribers that a new event 
+-- has occurred with given data to handle
+Events.ON_CLICK:trigger( { txt = "Hello Click" } )
+
+```
+
+Depending on the type of event, you may want to provide different arguments to the consumers. All parameters will be passed to the handler function you have defined upon subscribing to that event.
+
