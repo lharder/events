@@ -52,3 +52,14 @@ Events.ON_CLICK:trigger( { txt = "Hello Click" } )
 
 Depending on the type of event, you may want to provide different arguments to the consumers. All parameters will be passed to the callback function you have defined upon subscribing to that event.
 
+It is also possible to only temporarily pause receiving events and to turn them back on later without having to redefine the callback function as you would have to if you unsubscribed and resubscribed again. A common usecase would be to e.g. temporarily disable receiving a spaceship's steering events after opening a GUI menu and reacting to a different type of input. Upon closing the GUI dialog, you would simply unpause receiving the events as before:
+
+```
+-- pause receiving events temporarily
+Events.ON_CLICK:pause( self.subscription )
+
+-- receive events again 
+Events.ON_CLICK:unpause( self.subscription )
+```
+
+
