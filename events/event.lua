@@ -60,6 +60,7 @@ function Event.create( key )
 
 	this.key = key
 	this.callbacks = {}
+	this.paused = {}
 
 	return this
 end
@@ -84,6 +85,22 @@ end
 function Event:trigger( ... )
 	for i, cb in ipairs( self.callbacks ) do 
 		cb:exec( ... )
+	end
+end
+
+
+function Event:pause( cb )
+	self.callbacks = remove( self.callbacks, cb )
+	if not contains( self.paused, cb ) then 
+		table.insert( self.paused, cb ) 
+	end
+end
+
+
+function Event:unpause( cb )
+	self.paused = remove( self.paused, cb )
+	if not contains( self.callbacks, cb ) then 
+		table.insert( self.callbacks, cb ) 
 	end
 end
 

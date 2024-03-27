@@ -5,11 +5,22 @@ function init(self)
 	msg.post( ".", "acquire_input_focus" )
 	msg.post( "@render:", "use_fixed_fit_projection", { near = -1, far = 1 } )
 
-	Events.ON_THREE_CLICKS:subscribe( function( cnt ) 
+	-- must be declared first before being used in callback!
+	local clicks	
+	
+	clicks = Events.ON_THREE_CLICKS:subscribe( function( cnt ) 
 		pprint( "onThreeClicks from GO!" ) 
 		
 		local txt = "This was the " .. cnt .. ". click (~ multitude of 3)."
 		pprint( txt )
+
+		pprint( "Pausing 3-clicks-event now for 5 secs, single click still works..." )
+		Events.ON_THREE_CLICKS:pause( clicks )	
+		timer.delay( 5, false, function() 
+			Events.ON_THREE_CLICKS:unpause( clicks )
+			pprint( "Receiving clicks again ;o)" )
+		end )	
+		
 		label.set_text( "#label", txt )
 	end )
 end
