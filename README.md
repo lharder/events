@@ -6,7 +6,7 @@ Thanks to https://github.com/DanEngelbrecht/LuaScriptInstance, there are no rest
 
 Within your game, it is good practice to define your own, game-specific events for easy access, e.g. in a Lua module, you may define:
 
-```
+```lua
 -- original events module as provided by the library
 local Events = require( "events.events" )
 
@@ -20,7 +20,7 @@ return Events
 
 Then, in order to be notified of events, you subscribe to one of the defined event types:
 
-```
+```lua
 -- react to an event happening somewhere else
 self.subscription = Events.ON_CLICK:subscribe( function( attr ) 
 	pprint( "Click!" )
@@ -34,7 +34,7 @@ The event:subscribe() method returns a handle that you need in order to unsubscr
 
 So, to be on the save side, you should always call the event:unsubscribe() method in the finalize function of an object that subscribes to an event:
 
-```
+```lua
 -- unsubscribe from further events
 function final( self )
 	Events.ON_CLICK:unsubscribe( self.subscription )
@@ -43,7 +43,7 @@ end
 
 To trigger a new instance of an event, any script or module may call the event:trigger() method with any number of useful parameters. 
 
-```
+```lua
 -- inform all subscribers that a new event 
 -- has occurred with given data to handle
 Events.ON_CLICK:trigger( { txt = "Hello Click" } )
@@ -54,7 +54,7 @@ Depending on the type of event, you may want to provide different arguments to t
 
 It is also possible to only temporarily pause receiving events and to turn them back on later without having to redefine the callback function as you would have to if you unsubscribed and resubscribed again. A common usecase would be to e.g. temporarily disable receiving a spaceship's steering events after opening a GUI menu and reacting to a different type of input. Upon closing the GUI dialog, you would simply unpause receiving the events as before:
 
-```
+```lua
 -- pause receiving events temporarily
 Events.ON_CLICK:pause( self.subscription )
 
