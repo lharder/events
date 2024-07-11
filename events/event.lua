@@ -35,12 +35,12 @@ end
 
 function EventCallback:exec( ... )
 	local curCtx = lua_script_instance.Get()
-
 	lua_script_instance.Set( self.ctx )
-	local ok, error = pcall( self.fn, ... )
-	if not ok then pprint( "Error: " .. error ) end
 
+	local ok, error = pcall( self.fn, ... )
 	lua_script_instance.Set( curCtx )
+	
+	if not ok then pprint( "Error: " .. error ) end
 end
 
 function EventCallback:equals( cb )
